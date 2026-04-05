@@ -1,0 +1,40 @@
+---
+layout: default
+title: Post
+---
+
+<div id="post">Loading...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+const repoOwner = "ArifRawf";
+const repoName = "arifrawf.github.io";
+
+function extractImage(md) {
+  const match = md.match(/!\[.*?\]\((.*?)\)/);
+  return match ? match[1] : null;
+}
+
+async function loadPost() {
+  const res = await fetch(
+    `https://api.github.com/repos/${repoOwner}/${repoName}/issues/${id}`
+  );
+  const issue = await res.json();
+
+  const img = extractImage(issue.body);
+
+  document.getElementById("post").innerHTML = `
+    <h1>${issue.title}</h1>
+
+    ${img ? `<img src="${img}" class="thumb-large">` : ""}
+
+    <div>${marked.parse(issue.body)}</div>
+  `;
+}
+
+loadPost();
+</script>
