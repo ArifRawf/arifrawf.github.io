@@ -1,7 +1,6 @@
 ---
 layout: default
 ---
-
 <!-- Page Header -->
 {% if page.background %}
 <header class="masthead" style="background-image: url('{{ page.background | prepend: site.baseurl | replace: '//', '/' }}')">
@@ -22,22 +21,24 @@ layout: default
       </div>
     </div>
   </header>
-
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
 
         {{ content }}
-
-        <!-- Home Post List -->
-        <!-- Home Post List (GitHub Issues) -->
-<div id="posts"></div>
+<div id="posts">Loading...</div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <script>
 const repoOwner = "ArifRawf";
-const repoName = "ArifRawf.github.io";
+const repoName = "arifrawf.github.io";
+
+// 🔥 extract thumbnail
+function extractImage(md) {
+  const match = md.match(/!\[.*?\]\((.*?)\)/);
+  return match ? match[1] : "https://via.placeholder.com/800x400";
+}
 
 async function loadPosts() {
   const res = await fetch(
@@ -48,39 +49,40 @@ async function loadPosts() {
   const container = document.getElementById("posts");
   container.innerHTML = "";
 
-  issues.slice(0, 5).forEach(issue => {
+  issues.forEach(issue => {
     if (issue.pull_request) return;
 
-    const article = document.createElement("article");
-    article.className = "post-preview";
+    const img = extractImage(issue.body);
 
-    article.innerHTML = `
-      <a href="/post.html?id=${issue.number}">
-        <h2 class="post-title">${issue.title}</h2>
-        <h3 class="post-subtitle">
-          ${issue.body.substring(0, 120)}...
-        </h3>
-      </a>
+    const post = document.createElement("div");
+    post.className = "post";
+
+    post.innerHTML = `
+    <article class="post-preview">
+      <img src="${img}" class="thumb">
+
+      <h2 class="post-title">
+        <a href="/post.html?id=${issue.number}">
+          ${issue.title}
+        </a>
+      </h2>
+
+      <h3 class="post-subtitle">${issue.body.substring(0, 120)}...</h3>
+
       <p class="post-meta">
-        Posted by ${issue.user.login}
-        on ${new Date(issue.created_at).toDateString()}
+        ${issue.user.login} • 
+        ${new Date(issue.created_at).toDateString()}
       </p>
+      </article>
     `;
 
-    container.appendChild(article);
-
-    const hr = document.createElement("hr");
-    container.appendChild(hr);
+    container.appendChild(post);
   });
 }
 
 loadPosts();
 </script>
-        <!-- Pager -->
-        <div class="clearfix">
-          <a class="btn btn-primary float-right" href="{{"/posts" | relative_url }}">View All Posts &rarr;</a>
-        </div>
 
-      </div>
+</div>
     </div>
   </div>
