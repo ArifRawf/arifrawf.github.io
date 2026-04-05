@@ -1,23 +1,23 @@
-title:              Clean Blog
-email:              your-email@example.com
-description:        A Blog Theme by Start Bootstrap
-author:             Start Bootstrap
+title:              ArifRawf.github.io
+email:              armanbdd@gmail.com
+description:        We Provide Free Tips And Tricks To Let You Explore The Internet More Sharper.
+author:             Arif Rawf
 baseurl:            ""
 url:                "https://ArifRawf.github.io"
 
 # Social Profiles
-twitter_username:   SBootstrap
-github_username:    StartBootstrap
-facebook_username:  StartBootstrap
-instagram_username:  
-linkedin_username:
+twitter_username:   Arif Rawf
+github_username:    ArifRawf
+facebook_username:  Arif Rawf
+instagram_username:  Arif Rawf
+linkedin_username: Arif Rawf
 
 # Add your google-analytics ID here to activate google analytics
 google_analytics:   UA-XXXXXXXXX-X # out your google-analytics code
 
 # Build settings
 markdown:           kramdown
-paginate:           5
+paginate:           10
 paginate_path:      "/posts/page:num/"
 plugins:
   - jekyll-feed
