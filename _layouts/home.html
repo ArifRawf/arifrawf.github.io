@@ -30,32 +30,52 @@ layout: default
         {{ content }}
 
         <!-- Home Post List -->
-        {% for post in site.posts limit : 5 %}
+        <!-- Home Post List (GitHub Issues) -->
+<div id="posts"></div>
 
-        <article class="post-preview">
-          <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
-            <h2 class="post-title">{{ post.title }}</h2>
-            {% if post.subtitle %}
-            <h3 class="post-subtitle">{{ post.subtitle }}</h3>
-            {% else %}
-            <h3 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h3>
-            {% endif %}
-          </a>
-          <p class="post-meta">Posted by
-            {% if post.author %}
-            {{ post.author }}
-            {% else %}
-            {{ site.author }}
-            {% endif %}
-            on
-            {{ post.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=post.content %}            
-          </p>
-        </article>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-        <hr>
+<script>
+const repoOwner = "YOUR_USERNAME";
+const repoName = "YOUR_REPO";
 
-        {% endfor %}
+async function loadPosts() {
+  const res = await fetch(
+    `https://api.github.com/repos/${repoOwner}/${repoName}/issues`
+  );
+  const issues = await res.json();
 
+  const container = document.getElementById("posts");
+  container.innerHTML = "";
+
+  issues.slice(0, 5).forEach(issue => {
+    if (issue.pull_request) return;
+
+    const article = document.createElement("article");
+    article.className = "post-preview";
+
+    article.innerHTML = `
+      <a href="/post.html?id=${issue.number}">
+        <h2 class="post-title">${issue.title}</h2>
+        <h3 class="post-subtitle">
+          ${issue.body.substring(0, 120)}...
+        </h3>
+      </a>
+      <p class="post-meta">
+        Posted by ${issue.user.login}
+        on ${new Date(issue.created_at).toDateString()}
+      </p>
+    `;
+
+    container.appendChild(article);
+
+    const hr = document.createElement("hr");
+    container.appendChild(hr);
+  });
+}
+
+loadPosts();
+</script>
         <!-- Pager -->
         <div class="clearfix">
           <a class="btn btn-primary float-right" href="{{"/posts" | relative_url }}">View All Posts &rarr;</a>
